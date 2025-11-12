@@ -1,0 +1,11 @@
+# provide memory allocation functions
+import malloc
+import libc
+
+# provide gloval variables provided by nim
+proc NimMain() {.importc.}
+
+# our explicit entry point
+proc main(): int{.exportc.} =
+    NimMain()
+    return 0
