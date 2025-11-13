@@ -1,12 +1,19 @@
 {.used.}
 
+import uefi
+import std/strutils
+
 type
     const_pointer {.importc: "const void *".} = pointer
     
 proc fwrite*(buf: const_pointer, size: csize_t, 
         count: csize_t, stream: File):
     csize_t {.exportc.} =
-  return 0.csize_t
+    let output = $cast[cstring](buf)
+    for line in output.splitLines(keepEOL = true):
+        consoleOut(line)
+        consoleOut("\r")
+    return count
   
 # fflush: flushes the stream
 proc fflush*(stream: File): cint {.exportc.} =
