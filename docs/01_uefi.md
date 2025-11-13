@@ -150,3 +150,28 @@ proc consoleError*(str: string) =
   assert not sysTable.isNil
   discard sysTable.stdErr.outputString(sysTable.stdErr, W(str))
 ```
+
+Back in `libc.nim` I added a bit to `fwrite` so that it now works as expected (well until there are multiline outputs).
+
+```nim
+proc fwrite*(buf: const_pointer, size: csize_t, count: csize_t, stream: File): csize_t {.exportc.} =
+  let output = $cast[cstring](buf)
+  consoleOut(output)
+  return count
+```
+
+The main function is now:
+
+```nim
+proc EfiMain(imgHandle: EfiHandle, sysTable: ptr EFiSystemTable): EfiStatus {.exportc.} =
+  NimMain()
+  uefi.sysTable = sysTable
+
+  consoleClear()
+  echo "Hi welcome!"
+
+  quit()
+```
+
+This prints out nicely to the console :)
+

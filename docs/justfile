@@ -1,9 +1,0 @@
-nimflags := --os:any
-
-bootloader:
-    nim c {{nimflags}} --out:build/bootx64.efi src/bootx64.nim
-
-run:
-    mkdir -p diskimg/efi/boot
-    cp build/bootx64.efi diskimg/efi/boot/bootx64.efi
-    
