@@ -2,14 +2,20 @@
 
 {.used.}
 
+import debugcon
+
+const 
+  HeapSize = 1024*1024
+
 var
-  heap*: array[1*1024*1024, byte] # 1 MiB heap
-  heapBumpPtr*: int = cast[int](addr heap)
-  heapMaxPtr*: int = cast[int](addr heap) + heap.high
+  heap*: array[HeapSize, byte] # 1 MiB heap
+  heapBumpPtr*: int = cast[int](addr heap[0])
+  heapMaxPtr*: int = cast[int](addr heap[0]) + heap.high
 
 proc malloc*(size: csize_t): pointer {.exportc.} =
   if heapBumpPtr + size.int > heapMaxPtr:
-    return nil
+    debugln "Out of memory"
+    quit()
 
   result = cast[pointer](heapBumpPtr)
   inc heapBumpPtr, size.int
